@@ -42,7 +42,7 @@ class Pickup_Bot_Env():
         self.terminal_state = (3.14, 0.11 ,0.04,0.04)
 
         
-    def take_action(self , Q_state , epsilon):
+    def choose_action(self , Q_state , epsilon):
         options = ['move_down', 'move_up', 'move_left', 'move_right', 'close_gripper', 'open_gripper'] 
         choose = random.choices(['pick_greedy' , 'pick_not_greedy'] , weights=[1-epsilon , epsilon])
         
