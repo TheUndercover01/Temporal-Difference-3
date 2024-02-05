@@ -9,6 +9,16 @@ import math
 
 class Pickup_Bot_Env():
     def __init__(self,robot,GUI=False):
+        """
+        Initialize the pickup bot environment.
+
+        Parameters:
+        - robot: str, the URDF file path of the robot model.
+        - GUI: bool, flag to indicate whether to enable GUI mode.
+
+        Returns:
+        None
+        """
         #init the bot and the environment
         if GUI:
             physicsClient = p.connect(p.GUI)
@@ -43,6 +53,17 @@ class Pickup_Bot_Env():
 
         
     def choose_action(self , Q_state , epsilon):
+        """
+        Chooses an action based on the Q-state and epsilon value.
+
+        Parameters:
+        - Q_state: numpy array, Q-values for the current state.
+        - epsilon: float, exploration-exploitation trade-off parameter.
+
+        Returns:
+        - str, selected action.
+        """
+        
         options = ['move_down', 'move_up', 'move_left', 'move_right', 'close_gripper', 'open_gripper'] 
         choose = random.choices(['pick_greedy' , 'pick_not_greedy'] , weights=[1-epsilon , epsilon])
         
@@ -59,6 +80,12 @@ class Pickup_Bot_Env():
         
     
     def get_reward(self):
+        """
+        Computes the reward based on the current state.
+
+        Returns:
+        - int, reward value.
+        """
         #get the current state and the corresponding reward function 
         #basically after the action is take you need to get the reward by assesing which state is the bot at. get the reward and send it to the main algorithm which uses it to asses the Q value 
         # this class will only be used for TD and MC. DP we need to think differently, might be slightly tricky cuz we need to mention the current policy and shit
@@ -79,6 +106,12 @@ class Pickup_Bot_Env():
         ...
     
     def get_current_state(self):
+        """
+        Retrieves the current state of the robot.
+
+        Returns:
+        - tuple, rounded values of stand rotation, slider position, and gripper orientation.
+        """
         #this method will be used to get the values of the current dynamics of the link which can then be used in both get_reward and in step function
         self.stand_rotation = p.getEulerFromQuaternion(p.getLinkState(self.robot , 0)[1])[2] #get the euler z rotation
         self.slider_pos = p.getLinkState(self.robot , 1)[0][2 ] #get the slide alonng the z axis
@@ -103,6 +136,15 @@ class Pickup_Bot_Env():
 
         return self.rounded_position
     def step(self,action):
+        """
+        Take a step in the environment based on the given action.
+
+        Parameters:
+        - action: str, the action to take.
+
+        Returns:
+        None
+        """
         #take an action in pybullet
         #we can take in totol 6 actions
         ## open the gripper (1 action)
@@ -151,6 +193,12 @@ class Pickup_Bot_Env():
             p.stepSimulation()
             
     def reset_env(self):
+        """
+        Reset the environment.
+
+        Returns:
+        None
+        """
         #p.discopnenct and call the class again
         p.disconnect()
         
